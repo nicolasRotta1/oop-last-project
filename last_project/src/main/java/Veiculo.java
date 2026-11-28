@@ -46,6 +46,8 @@ public abstract class Veiculo {
         status = StatusVeiculo.EM_USO;
     }
 
+    // Para veiculos mecanicos não faz nada, 
+    //serve para não preciser de instanceof
     public void consumirEnergia(long minutos) {
     }
 
