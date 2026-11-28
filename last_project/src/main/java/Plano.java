@@ -17,7 +17,7 @@ public abstract class Plano {
         return getValor();
     }
 
-    public abstract double calcularViagem();
+    public abstract double calcularViagem(Veiculo veiculo, Long minutos);
 
     public String getNome() {
         return nome;

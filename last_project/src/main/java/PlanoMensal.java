@@ -5,7 +5,9 @@ public class PlanoMensal extends Plano{
     }
 
     @Override
-    public double calcularViagem() {
-        return 0;
+    public double calcularViagem(Veiculo veiculo, Long minutos) {
+        // Retorna 0 se o calculo der menor que 0
+        double minutoPagar = Math.max(0, minutos - 15);                                                                  
+        return  veiculo.valorMinuto() * minutoPagar;
     }
 }

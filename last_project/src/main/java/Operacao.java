@@ -12,9 +12,6 @@ public class Operacao {
         if (valor <= 0) {
             throw new IllegalArgumentException("Erro: Valor da operação inválido");
         }
-        if (saldoApos < 0) {
-            throw new IllegalArgumentException("Erro: Saldo após a operação inválido");
-        }
         this.id = UUID.randomUUID();
         this.data = LocalDateTime.now();
         this.valor = valor;

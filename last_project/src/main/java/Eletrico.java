@@ -34,6 +34,26 @@ public abstract class Eletrico extends Veiculo{
         bateria.utilizarCarga(minutos * consumoPorMinuto());
     }
 
+    @Override
+    public void consumirEnergia(long minutos) {
+        if (minutos < 1) {
+            return;
+        }
+
+        int consumo = consumoPorMinuto();
+        if (consumo <= 0) {
+            throw new IllegalStateException("O consumo de bateria por minuto deve ser maior que zero!");
+        }
+
+        int cargaAtual = bateria.getCarga();
+        long minutosParaEsgotar = (cargaAtual + (long) consumo - 1) / consumo;
+        if (minutos >= minutosParaEsgotar) {
+            bateria.utilizarCarga(cargaAtual);
+            return;
+        }
+        consumirBateria((int) minutos);
+    }
+
     public void recarregar(){
         if(getStatus() == StatusVeiculo.EM_USO){
             throw new IllegalStateException("Um veículo em uso não pode ser recarregado!");

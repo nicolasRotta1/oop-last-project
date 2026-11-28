@@ -21,9 +21,9 @@ public abstract class Veiculo {
     // Metodo que ira retornar o valor que o veiculo custa por minuto
     public abstract double valorMinuto();
 
-    // Por padrao o veiculo nao aceita desconto
+    // Por padrao o veiculo aceita desconto
     public boolean aceitaDesconto(){
-        return false;
+        return true;
     }
 
     public void enviarManutencao(){
@@ -44,6 +44,9 @@ public abstract class Veiculo {
         }
 
         status = StatusVeiculo.EM_USO;
+    }
+
+    public void consumirEnergia(long minutos) {
     }
 
     public int getCodigo() {

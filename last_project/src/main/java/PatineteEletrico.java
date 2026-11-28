@@ -15,4 +15,9 @@ public class PatineteEletrico extends Eletrico {
 
     @Override
     public int consumoPorMinuto() { return CONSUMO_POR_MINUTO; }
+
+    @Override
+    public boolean aceitaDesconto() {
+        return false;
+    }
 }

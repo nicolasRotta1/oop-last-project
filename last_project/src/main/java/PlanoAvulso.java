@@ -4,9 +4,8 @@ public class PlanoAvulso extends Plano{
         super("Avulso", 0);
     }
 
-
     @Override
-    public double calcularViagem() {
-        return 0;
+    public double calcularViagem(Veiculo veiculo, Long minutos) {
+        return veiculo.taxaDesbloqueio() + veiculo.valorMinuto() * minutos;
     }
 }

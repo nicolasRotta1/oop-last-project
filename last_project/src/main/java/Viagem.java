@@ -1,6 +1,7 @@
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.math.RoundingMode;
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class Viagem {
 
@@ -70,11 +71,18 @@ public class Viagem {
         }
 
         // faz o calculo para so depois atribuir a variavel
-        double calcularValorTotal = calcularValorTotal(dataFim);
+        double calcularValorTotal = calcularValorTotal(
+                Duration.between(dataInicio, dataFim).toMinutes());
 
         // adiciona o veiculo e ja faz a validacao
         if(!estacaoChegada.estacionarVeiculo(veiculo)){
             throw new IllegalStateException("Não foi possívle adicionar o veículo à estação de chegada!");
+        }
+
+        // Metodo para consumir bateria do veiculo
+        veiculo.consumirEnergia(Duration.between(dataInicio, dataFim).toMinutes());
+        if (calcularValorTotal > 0) {
+            usuario.getCarteira().debitar(calcularValorTotal);
         }
 
         this.valorTotal = calcularValorTotal;
@@ -84,14 +92,10 @@ public class Viagem {
         return true;
     }
 
-    private double calcularValorTotal(LocalDateTime dataFim) {
-
-        long minutos = Duration.between(dataInicio, dataFim).toMinutes();
-
-        double taxaDesbloqueio = veiculo.taxaDesbloqueio();
-        double valorMinuto = veiculo.valorMinuto();
-
-        return taxaDesbloqueio + (minutos * valorMinuto);
+    private double calcularValorTotal(long minutos) {
+        return BigDecimal.valueOf(usuario.getPlano().calcularViagem(veiculo, minutos))
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
     }
 
     public long calcularDuracao() {
@@ -143,7 +147,7 @@ public class Viagem {
     // verifica se a viagem ainda esta em andamento antes de retornar o valorTotal
     public double getValorTotal(){
 
-        if(!isEmAndamento()){
+        if(isEmAndamento()){
             throw new IllegalStateException("O valor total ainda não pode ser calculado!");
         }
 

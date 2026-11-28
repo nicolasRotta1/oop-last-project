@@ -1,3 +1,4 @@
+import Enums.StatusVeiculo;
 import java.util.ArrayList;
 
 public class Usuario {
@@ -13,6 +14,19 @@ public class Usuario {
         if (plano == null) {
             throw new IllegalArgumentException("Erro: Plano não pode ser nulo");
         }
+        if (cpf == null) {
+            throw new IllegalArgumentException("Erro: CPF não pode ser nulo");
+        }
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("Erro: Nome não pode ser vazio");
+        }
+        if (email != null && !email.isBlank() && !email.contains("@")) {
+            throw new IllegalArgumentException("Erro: E-mail inválido");
+        }
+        if (!telefoneValido(telefone)) {
+            throw new IllegalArgumentException("Erro: Telefone inválido");
+        }
+
         this.cpf = cpf;
         this.nome = nome;
         this.email = email;
@@ -20,6 +34,17 @@ public class Usuario {
         this.carteira = new Carteira();
         this.plano = plano;
         this.viagens = new ArrayList<>();
+    }
+
+    private static boolean telefoneValido(String telefone) {
+        if (telefone == null || telefone.isBlank()) {
+            return true;
+        }
+        if (!telefone.matches("[0-9() .-]+")) {
+            return false;
+        }
+        int quantidadeDigitos = telefone.replaceAll("\\D", "").length();
+        return quantidadeDigitos == 10 || quantidadeDigitos == 11;
     }
 
     public boolean mudarPlano(Plano plano) {
@@ -37,9 +62,34 @@ public class Usuario {
         setPlano(plano);
         return true;
     }
+    
 
     public boolean possuiViagemEmAndamento(){
+        for (Viagem viagem : viagens) {
+            if (viagem.isEmAndamento()) {
+                return true;
+            }
+        }
         return false;
+    }
+
+    public boolean iniciarViagem(Veiculo veiculo, Estacao estacaoPartida) {
+        if (veiculo == null) {
+            throw new IllegalArgumentException("Veículo não pode ser nulo para iniciar uma viagem.");
+        }
+        if (estacaoPartida == null) {
+            throw new IllegalArgumentException("Estação de partida não pode ser nula para iniciar uma viagem.");
+        }
+        if (carteira.getSaldo() < 5
+                || possuiViagemEmAndamento()
+                || veiculo.getStatus() != StatusVeiculo.DISPONIVEL
+                || (veiculo instanceof Eletrico eletrico && eletrico.getCargaBateria() < 20)) {
+            return false;
+        }
+
+        Viagem viagem = new Viagem(this, veiculo, estacaoPartida);
+        addViagem(viagem);
+        return true;
     }
 
     public String getCpf() {
